@@ -38,7 +38,7 @@
           </div>
         </div>
 
-        <button type="submit" class="btn btn-primary">Добавить заметку</button>
+        <button type="submit" class="btn btn-primary" :disabled="!newNoteText.trim()">Добавить заметку</button>
         <button type="button" @click="resetData" class="btn btn-danger ms-2">Сбросить данные</button>
 
       </form>
@@ -52,6 +52,7 @@
             <div>
               <input type="checkbox" v-model="note.completed" class="form-check-input" id="completedItem">
               <label for="completedItem" class="form-check-label ms-2">Завершено</label>
+              <button @click="deleteNote(index)" class="btn btn-danger ms-2">Удалить</button>
             </div>
           </div>
         </li>
@@ -83,6 +84,11 @@ export default {
   },
   methods: {
     addNote() {
+      if (this.newNoteText.trim() === '') {
+        // Prevent adding empty notes
+        return;
+      }
+
       const newNote = {
         text: this.newNoteText,
         type: this.newNoteType,
@@ -106,6 +112,10 @@ export default {
     resetData() {
       localStorage.removeItem('notes');
       this.notes = [];
+    },
+    deleteNote(index) {
+      this.notes.splice(index, 1);
+      this.saveData();
     },
   },
 };
